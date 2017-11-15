@@ -12,11 +12,11 @@ import (
 	"testing"
 	"time"
 
+	"github.com/mongodb/mongo-tools/common/bson"
 	"github.com/mongodb/mongo-tools/common/testutil"
 	"github.com/mongodb/mongo-tools/mongostat/stat_consumer/line"
 	"github.com/mongodb/mongo-tools/mongostat/status"
 	. "github.com/smartystreets/goconvey/convey"
-	"gopkg.in/mgo.v2/bson"
 )
 
 func readBSONFile(file string, t *testing.T) (stat *status.ServerStatus) {

@@ -10,12 +10,12 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/mongodb/mongo-tools/common/bson"
 	"github.com/mongodb/mongo-tools/common/bsonutil"
 	"github.com/mongodb/mongo-tools/common/db"
 	"github.com/mongodb/mongo-tools/common/intents"
 	"github.com/mongodb/mongo-tools/common/json"
 	"github.com/mongodb/mongo-tools/common/log"
-	"gopkg.in/mgo.v2/bson"
 )
 
 // Metadata holds information about a collection's options and indexes.

@@ -7,9 +7,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/mongodb/mongo-tools/common/bson"
 	. "gopkg.in/check.v1"
 	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2/dbtest"
 	"gopkg.in/mgo.v2/txn"
 )

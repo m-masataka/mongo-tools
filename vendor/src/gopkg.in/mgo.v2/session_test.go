@@ -37,9 +37,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/mongodb/mongo-tools/common/bson"
 	. "gopkg.in/check.v1"
 	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
 )
 
 func (s *S) TestRunString(c *C) {

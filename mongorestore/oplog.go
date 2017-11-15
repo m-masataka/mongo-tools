@@ -11,13 +11,13 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/mongodb/mongo-tools/common/bson"
 	"github.com/mongodb/mongo-tools/common/db"
 	"github.com/mongodb/mongo-tools/common/intents"
 	"github.com/mongodb/mongo-tools/common/log"
 	"github.com/mongodb/mongo-tools/common/progress"
 	"github.com/mongodb/mongo-tools/common/util"
 	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
 )
 
 // oplogMaxCommandSize sets the maximum size for multiple buffered ops in the

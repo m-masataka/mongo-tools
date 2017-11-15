@@ -10,6 +10,7 @@ package mongodump
 import (
 	"github.com/mongodb/mongo-tools/common/archive"
 	"github.com/mongodb/mongo-tools/common/auth"
+	"github.com/mongodb/mongo-tools/common/bson"
 	"github.com/mongodb/mongo-tools/common/bsonutil"
 	"github.com/mongodb/mongo-tools/common/db"
 	"github.com/mongodb/mongo-tools/common/failpoint"
@@ -20,7 +21,6 @@ import (
 	"github.com/mongodb/mongo-tools/common/progress"
 	"github.com/mongodb/mongo-tools/common/util"
 	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
 
 	"bufio"
 	"compress/gzip"

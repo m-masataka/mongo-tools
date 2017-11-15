@@ -41,7 +41,7 @@ import (
 	"sync"
 	"time"
 
-	"gopkg.in/mgo.v2/bson"
+	"github.com/mongodb/mongo-tools/common/bson"
 )
 
 type Mode int

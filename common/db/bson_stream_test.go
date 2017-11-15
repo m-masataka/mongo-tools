@@ -8,8 +8,8 @@ package db
 
 import (
 	"bytes"
+	"github.com/mongodb/mongo-tools/common/bson"
 	. "github.com/smartystreets/goconvey/convey"
-	"gopkg.in/mgo.v2/bson"
 	"io/ioutil"
 	"testing"
 )

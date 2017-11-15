@@ -12,9 +12,9 @@ import (
 	"io"
 
 	"github.com/mongodb/mongo-tools/common"
+	"github.com/mongodb/mongo-tools/common/bson"
 	"github.com/mongodb/mongo-tools/common/log"
 	"github.com/mongodb/mongo-tools/common/util"
-	"gopkg.in/mgo.v2/bson"
 )
 
 type file interface {

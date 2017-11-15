@@ -9,10 +9,10 @@ package mongodump
 import (
 	"fmt"
 
+	"github.com/mongodb/mongo-tools/common/bson"
 	"github.com/mongodb/mongo-tools/common/db"
 	"github.com/mongodb/mongo-tools/common/log"
 	"github.com/mongodb/mongo-tools/common/util"
-	"gopkg.in/mgo.v2/bson"
 )
 
 // determineOplogCollectionName uses a command to infer

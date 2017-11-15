@@ -8,8 +8,8 @@ package json
 
 import (
 	"fmt"
+	"github.com/mongodb/mongo-tools/common/bson"
 	. "github.com/smartystreets/goconvey/convey"
-	"gopkg.in/mgo.v2/bson"
 	"testing"
 )
 

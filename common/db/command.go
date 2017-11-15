@@ -8,8 +8,8 @@ package db
 
 import (
 	"fmt"
+	"github.com/mongodb/mongo-tools/common/bson"
 	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
 	"strings"
 )
 

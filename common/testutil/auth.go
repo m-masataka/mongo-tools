@@ -8,9 +8,9 @@ package testutil
 
 import (
 	"fmt"
+	"github.com/mongodb/mongo-tools/common/bson"
 	"github.com/mongodb/mongo-tools/common/options"
 	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
 	"os"
 )
 

@@ -14,8 +14,8 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/mongodb/mongo-tools/common/bson"
 	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
 
 	crand "crypto/rand"
 	mrand "math/rand"

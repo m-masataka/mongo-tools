@@ -9,8 +9,8 @@ package auth
 
 import (
 	"fmt"
+	"github.com/mongodb/mongo-tools/common/bson"
 	"github.com/mongodb/mongo-tools/common/db"
-	"gopkg.in/mgo.v2/bson"
 	"strings"
 )
 

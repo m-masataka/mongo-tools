@@ -18,7 +18,7 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
-	"gopkg.in/mgo.v2/bson"
+	"github.com/mongodb/mongo-tools/common/bson"
 	"math"
 	"reflect"
 	"runtime"
