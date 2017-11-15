@@ -8,7 +8,8 @@ package json
 
 import (
 	"fmt"
-	"gopkg.in/mgo.v2/bson"
+	//"gopkg.in/mgo.v2/bson"
+	"github.com/mongodb/mongo-tools/common/bson"
 	"reflect"
 )
 
