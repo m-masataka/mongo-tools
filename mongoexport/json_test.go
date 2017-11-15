@@ -14,6 +14,7 @@ import (
 	//"gopkg.in/mgo.v2/bson"
 	"github.com/mongodb/mongo-tools/common/bson"
 	"testing"
+	"fmt"
 )
 
 func TestWriteJSON(t *testing.T) {
@@ -66,7 +67,10 @@ func TestJSONArray(t *testing.T) {
 			So(err, ShouldBeNil)
 			// Unmarshal the whole thing, it should be valid json
 			fromJSON := []map[string]interface{}{}
+			fmt.Println("\n out.Bytes()", string(out.Bytes()))
 			err = json.Unmarshal(out.Bytes(), &fromJSON)
+			fmt.Println("\n fromJSON err", fromJSON, err)
+
 			So(err, ShouldBeNil)
 			So(len(fromJSON), ShouldEqual, len(testObjs))
 

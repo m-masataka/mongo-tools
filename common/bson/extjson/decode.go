@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/10gen/mongo-go-driver/bson"
+	"github.com/mongodb/mongo-tools/common/bson"
 )
 
 // DecodeExtended decodes any extended JSON values in the given value.

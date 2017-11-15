@@ -11,8 +11,8 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"github.com/10gen/mongo-go-driver/bson"
-	"github.com/10gen/mongo-go-driver/bson/internal/json"
+	"github.com/mongodb/mongo-tools/common/bson"
+	"github.com/mongodb/mongo-tools/common/bson/internal/json"
 	"math"
 )
 

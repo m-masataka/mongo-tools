@@ -10,8 +10,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/10gen/mongo-go-driver/bson"
-	"github.com/10gen/mongo-go-driver/bson/internal/json"
+	"github.com/mongodb/mongo-tools/common/bson"
+	"github.com/mongodb/mongo-tools/common/bson/internal/json"
 )
 
 // Code obtained from Stitch/common

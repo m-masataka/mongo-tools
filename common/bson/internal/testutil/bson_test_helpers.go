@@ -7,7 +7,7 @@ import (
 	"path"
 	"testing"
 
-	"github.com/10gen/mongo-go-driver/bson/internal/json"
+	"github.com/mongodb/mongo-tools/common/bson/internal/json"
 	"github.com/stretchr/testify/require"
 )
 

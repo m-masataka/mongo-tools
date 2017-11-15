@@ -20,7 +20,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/10gen/mongo-go-driver/bson"
+	"github.com/mongodb/mongo-tools/common/bson"
 	"github.com/stretchr/testify/require"
 )
 

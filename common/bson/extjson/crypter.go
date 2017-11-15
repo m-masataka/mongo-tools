@@ -11,7 +11,7 @@ import (
 	"io/ioutil"
 	"reflect"
 
-	"github.com/10gen/mongo-go-driver/bson"
+	"github.com/mongodb/mongo-tools/common/bson"
 )
 
 // Errors used during encryption/decryption

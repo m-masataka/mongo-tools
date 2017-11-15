@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/10gen/mongo-go-driver/bson"
+	"github.com/mongodb/mongo-tools/common/bson"
 	gc "github.com/smartystreets/goconvey/convey"
 )
 

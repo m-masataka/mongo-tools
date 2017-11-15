@@ -1,6 +1,6 @@
 package extjson
 
-import "github.com/10gen/mongo-go-driver/bson"
+import "github.com/mongodb/mongo-tools/common/bson"
 
 // MapAsBsonD returns a shallow copy of the given document.
 func MapAsBsonD(m map[string]interface{}) bson.D {
