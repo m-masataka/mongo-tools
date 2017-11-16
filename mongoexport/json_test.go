@@ -8,13 +8,15 @@ package mongoexport
 
 import (
 	"bytes"
+
 	"github.com/mongodb/mongo-tools/common/json"
 	"github.com/mongodb/mongo-tools/common/testutil"
 	. "github.com/smartystreets/goconvey/convey"
 	//"gopkg.in/mgo.v2/bson"
-	"github.com/mongodb/mongo-tools/common/bson"
-	"testing"
 	"fmt"
+	"testing"
+
+	"github.com/mongodb/mongo-tools/common/bson"
 )
 
 func TestWriteJSON(t *testing.T) {
@@ -32,8 +34,11 @@ func TestWriteJSON(t *testing.T) {
 				So(err, ShouldBeNil)
 				err = jsonExporter.ExportDocument(bson.D{{"_id", objId}})
 				So(err, ShouldBeNil)
+				//err = jsonExporter.ExportDocument(bson.D{{"bnry", bson.Binary{0x00, []byte("sdfas")}}})
+				//So(err, ShouldBeNil)
 				err = jsonExporter.WriteFooter()
 				So(err, ShouldBeNil)
+				fmt.Println("TestWriteJSON", out.String())
 				So(out.String(), ShouldEqual, `{"_id":{"$oid":"`+objId.Hex()+`"}}`+"\n")
 			})
 
@@ -56,8 +61,24 @@ func TestJSONArray(t *testing.T) {
 			So(err, ShouldBeNil)
 
 			// Export a few docs of various types
+			//
+			////out.Bytes() ["{\"_id\":{\"$oid\":\"5a0cce3602bf894044078833\"}}","{\"_id\":\"asd\"}","{\"_id\":{\"$numberInt\":\"12345\"}}","{\"_id\":{\"$binary\":{\"base64\":\"c2RmYXM=\",\"subType\":\"00\"}}}","{\"_id\":{\"$numberDouble\":\"3.14159\"}}","{\"_id\":{\"A\":{\"$numberInt\":\"1\"}}}"]
+			////out.Bytes() [{"_id":{"$oid":"5a0cce6002bf8940724fe6cc"}},{"_id":"asd"},{"_id":12345},{"_id":{"$binary":"c2RmYXM=","$type":"00"}},{"_id":3.14159},{"_id":{"A":1}}]
+			//
+			//([^\\])\"   \1
+			//\\\"       \"
 
-			testObjs := []interface{}{bson.NewObjectId(), "asd", 12345, 3.14159, bson.D{{"A", 1}}}
+			//[{"_id":{"$oid":"5a0cce6002bf8940724fe6cc"}},{"_id":"asd"},{"_id":12345},{"_id":{"$binary":"c2RmYXM=","$type":"00"}},{"_id":3.14159},{"_id":{"A":1}}]
+
+			//out.Bytes() ["{\"_id\":{\"$oid\":\"5a0cce3602bf894044078833\"}}",
+			// 					"{\"_id\":\"asd\"}",
+			// 					"{\"_id\":{\"$numberInt\":\"12345\"}}",
+			// 					"{\"_id\":{\"$binary\":{\"base64\":\"c2RmYXM=\",\"subType\":\"00\"}}}",
+			// 					"{\"_id\":{\"$numberDouble\":\"3.14159\"}}",
+			// 					"{\"_id\":{\"A\":{\"$numberInt\":\"1\"}}}"
+			// 				]
+
+			testObjs := []interface{}{bson.NewObjectId(), "asd", 12345, bson.Binary{0x00, []byte("sdfas")}, 3.14159, bson.D{{"A", 1}}}
 			for _, obj := range testObjs {
 				err = jsonExporter.ExportDocument(bson.D{{"_id", obj}})
 				So(err, ShouldBeNil)
@@ -67,7 +88,10 @@ func TestJSONArray(t *testing.T) {
 			So(err, ShouldBeNil)
 			// Unmarshal the whole thing, it should be valid json
 			fromJSON := []map[string]interface{}{}
-			fmt.Println("\n out.Bytes()", string(out.Bytes()))
+
+			strOut := string(out.Bytes())
+			fmt.Println("\n out.Bytes()", strOut)
+
 			err = json.Unmarshal(out.Bytes(), &fromJSON)
 			fmt.Println("\n fromJSON err", fromJSON, err)
 

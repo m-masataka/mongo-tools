@@ -8,13 +8,13 @@ package mongoexport
 
 import (
 	"encoding/json"
-	"github.com/mongodb/mongo-tools/common/bsonutil"
-	"github.com/mongodb/mongo-tools/common/testutil"
-	. "github.com/smartystreets/goconvey/convey"
-	//"gopkg.in/mgo.v2/bson"
-	"github.com/mongodb/mongo-tools/common/bson"
 	"os"
 	"testing"
+
+	"github.com/mongodb/mongo-tools/common/bson"
+	"github.com/mongodb/mongo-tools/common/bson/extjson"
+	"github.com/mongodb/mongo-tools/common/testutil"
+	. "github.com/smartystreets/goconvey/convey"
 )
 
 func TestExtendedJSON(t *testing.T) {
@@ -32,11 +32,13 @@ func TestExtendedJSON(t *testing.T) {
 				bson.Undefined,
 			},
 		}
-		out, err := bsonutil.ConvertBSONValueToJSON(x)
+		d := bson.D{}
+		d.AppendMap(x)
+		out, err := extjson.EncodeBSONDtoJSON(d)
 		So(err, ShouldBeNil)
 
 		jsonEncoder := json.NewEncoder(os.Stdout)
-		jsonEncoder.Encode(out)
+		jsonEncoder.Encode(string(out))
 	})
 }
 

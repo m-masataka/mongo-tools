@@ -14,6 +14,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/mongodb/mongo-tools/common/bson"
 	"github.com/mongodb/mongo-tools/common/bsonutil"
 	"github.com/mongodb/mongo-tools/common/db"
 	"github.com/mongodb/mongo-tools/common/json"
@@ -22,8 +23,6 @@ import (
 	"github.com/mongodb/mongo-tools/common/progress"
 	"github.com/mongodb/mongo-tools/common/util"
 	"gopkg.in/mgo.v2"
-	//"gopkg.in/mgo.v2/bson"
-	"github.com/mongodb/mongo-tools/common/bson"
 )
 
 // Output types supported by mongoexport.

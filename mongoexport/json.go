@@ -9,11 +9,13 @@ package mongoexport
 import (
 	"bytes"
 	"fmt"
-	"github.com/mongodb/mongo-tools/common/bsonutil"
-	"github.com/mongodb/mongo-tools/common/json"
-	"github.com/mongodb/mongo-tools/common/bson"
-	//"gopkg.in/mgo.v2/bson"
 	"io"
+
+	"strconv"
+
+	"github.com/mongodb/mongo-tools/common/bson"
+	"github.com/mongodb/mongo-tools/common/bson/extjson"
+	"github.com/mongodb/mongo-tools/common/json"
 )
 
 // JSONExportOutput is an implementation of ExportOutput that writes documents
@@ -87,11 +89,14 @@ func (jsonExporter *JSONExportOutput) ExportDocument(document bson.D) error {
 				jsonExporter.Out.Write([]byte("\n"))
 			}
 		}
-		extendedDoc, err := bsonutil.ConvertBSONValueToJSON(document)
+
+		//extendedDoc, err := bsonutil.ConvertBSONValueToJSON(document)
+		extendedDoc, err := extjson.EncodeBSONDtoJSON(document)
 		if err != nil {
 			return err
 		}
-		jsonOut, err := json.Marshal(extendedDoc)
+		//jsonOut, err := json.Marshal(extendedDoc)
+		jsonOut, err := json.Marshal(string(extendedDoc))
 		if err != nil {
 			return fmt.Errorf("error converting BSON to extended JSON: %v", err)
 		}
@@ -100,13 +105,21 @@ func (jsonExporter *JSONExportOutput) ExportDocument(document bson.D) error {
 			json.Indent(&jsonFormatted, jsonOut, "", "\t")
 			jsonOut = jsonFormatted.Bytes()
 		}
-		jsonExporter.Out.Write(jsonOut)
+		// Clean my jsonout here
+		fmt.Println("JSONOUTOUTOU", string(jsonOut))
+		unq, err := strconv.Unquote(string(jsonOut))
+		jsonExporter.Out.Write([]byte(unq))
 	} else {
-		extendedDoc, err := bsonutil.ConvertBSONValueToJSON(document)
+		fmt.Println("SDFGHJKLKJHGFDS")
+		extendedDoc, err := extjson.EncodeBSONDtoJSON(document)
 		if err != nil {
 			return err
 		}
-		err = jsonExporter.Encoder.Encode(extendedDoc)
+		fmt.Println(extendedDoc, string(extendedDoc))
+		jsonExporter.Out.Write(extendedDoc)
+		jsonExporter.Out.Write([]byte("\n"))
+
+		//err = jsonExporter.Encoder.Encode(string(extendedDoc))
 		if err != nil {
 			return err
 		}
@@ -114,3 +127,14 @@ func (jsonExporter *JSONExportOutput) ExportDocument(document bson.D) error {
 	jsonExporter.NumExported++
 	return nil
 }
+
+/*
+91
+ out.Bytes() ["{\"_id\":{\"$oid\":\"5a0cab4202bf8932fe626c02\"}}","{\"_id\":\"asd\"}","{\"_id\":{\"$numberInt\":\"12345\"}}","{\"_id\":{\"$numberDouble\":\"3.14159\"}}","{\"_id\":{\"A\":{\"$numberInt\":\"1\"}}}"]
+ fromJSON err [map[] map[] map[] map[] map[]] json: cannot unmarshal string into Go value of type map[string]interface {}
+
+// Below works
+92
+ out.Bytes() [{"_id":{"$oid":"5a0cab5a02bf893329138336"}},{"_id":"asd"},{"_id":12345},{"_id":3.14159},{"_id":{"A":1}}]
+ fromJSON err [map[_id:map[$oid:5a0cab5a02bf893329138336]] map[_id:asd] map[_id:12345] map[_id:3.14159] map[_id:map[A:1]]] <nil>
+*/

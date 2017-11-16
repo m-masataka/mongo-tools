@@ -11,6 +11,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/mongodb/mongo-tools/common/bson"
 	"github.com/mongodb/mongo-tools/common/db"
 	"github.com/mongodb/mongo-tools/common/log"
 	"github.com/mongodb/mongo-tools/common/options"
@@ -18,11 +19,7 @@ import (
 	"github.com/mongodb/mongo-tools/common/signals"
 	"github.com/mongodb/mongo-tools/common/util"
 	"github.com/mongodb/mongo-tools/mongoexport"
-
 	"gopkg.in/mgo.v2"
-	//"gopkg.in/mgo.v2/bson"
-	"github.com/mongodb/mongo-tools/common/bson"
-
 )
 
 const (

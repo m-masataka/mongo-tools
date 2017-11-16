@@ -9,13 +9,16 @@ package mongoexport
 import (
 	"bytes"
 	"encoding/csv"
-	"github.com/mongodb/mongo-tools/common/bsonutil"
+
 	"github.com/mongodb/mongo-tools/common/testutil"
 	. "github.com/smartystreets/goconvey/convey"
 	//"gopkg.in/mgo.v2/bson"
-	"github.com/mongodb/mongo-tools/common/bson"
 	"strings"
 	"testing"
+
+	"github.com/mongodb/mongo-tools/common/bson"
+	"github.com/mongodb/mongo-tools/common/bson/extjson"
+	"github.com/mongodb/mongo-tools/common/bsonutil"
 )
 
 func TestWriteCSV(t *testing.T) {
@@ -79,7 +82,7 @@ func TestWriteCSV(t *testing.T) {
 
 func TestExtractDField(t *testing.T) {
 	Convey("With a test bson.D", t, func() {
-		b := []interface{}{"inner", bsonutil.MarshalD{{"inner2", 1}}}
+		b := []interface{}{"inner", extjson.MarshalD{{"inner2", 1}}}
 		c := bsonutil.MarshalD{{"x", 5}}
 		d := bsonutil.MarshalD{{"z", nil}}
 		testD := bsonutil.MarshalD{
