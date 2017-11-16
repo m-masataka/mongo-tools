@@ -9,16 +9,13 @@ package mongoexport
 import (
 	"bytes"
 	"encoding/csv"
-
-	"github.com/mongodb/mongo-tools/common/testutil"
-	. "github.com/smartystreets/goconvey/convey"
-	//"gopkg.in/mgo.v2/bson"
 	"strings"
 	"testing"
 
 	"github.com/mongodb/mongo-tools/common/bson"
 	"github.com/mongodb/mongo-tools/common/bson/extjson"
-	"github.com/mongodb/mongo-tools/common/bsonutil"
+	"github.com/mongodb/mongo-tools/common/testutil"
+	. "github.com/smartystreets/goconvey/convey"
 )
 
 func TestWriteCSV(t *testing.T) {
@@ -83,9 +80,9 @@ func TestWriteCSV(t *testing.T) {
 func TestExtractDField(t *testing.T) {
 	Convey("With a test bson.D", t, func() {
 		b := []interface{}{"inner", extjson.MarshalD{{"inner2", 1}}}
-		c := bsonutil.MarshalD{{"x", 5}}
-		d := bsonutil.MarshalD{{"z", nil}}
-		testD := bsonutil.MarshalD{
+		c := extjson.MarshalD{{"x", 5}}
+		d := extjson.MarshalD{{"z", nil}}
+		testD := extjson.MarshalD{
 			{"a", "string"},
 			{"b", b},
 			{"c", c},
@@ -99,7 +96,7 @@ func TestExtractDField(t *testing.T) {
 
 		Convey("array fields should be extracted by name", func() {
 			val := extractFieldByName("b.1", testD)
-			So(val, ShouldResemble, bsonutil.MarshalD{{"inner2", 1}})
+			So(val, ShouldResemble, extjson.MarshalD{{"inner2", 1}})
 			val = extractFieldByName("b.1.inner2", testD)
 			So(val, ShouldEqual, 1)
 			val = extractFieldByName("b.0", testD)
@@ -108,13 +105,13 @@ func TestExtractDField(t *testing.T) {
 
 		Convey("subdocument fields should be extracted by name", func() {
 			val := extractFieldByName("c", testD)
-			So(val, ShouldResemble, bsonutil.MarshalD{{"x", 5}})
+			So(val, ShouldResemble, extjson.MarshalD{{"x", 5}})
 			val = extractFieldByName("c.x", testD)
 			So(val, ShouldEqual, 5)
 
 			Convey("even if they contain null values", func() {
 				val := extractFieldByName("d", testD)
-				So(val, ShouldResemble, bsonutil.MarshalD{{"z", nil}})
+				So(val, ShouldResemble, extjson.MarshalD{{"z", nil}})
 				val = extractFieldByName("d.z", testD)
 				So(val, ShouldEqual, nil)
 				val = extractFieldByName("d.z.nope", testD)

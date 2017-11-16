@@ -8,19 +8,21 @@ package mongoexport
 
 import (
 	"encoding/csv"
+	"errors"
 	"fmt"
-	"github.com/mongodb/mongo-tools/common/bsonutil"
-	"github.com/mongodb/mongo-tools/common/json"
-	//"gopkg.in/mgo.v2/bson"
-	"github.com/mongodb/mongo-tools/common/bson"
 	"io"
 	"reflect"
 	"strconv"
 	"strings"
+
+	"github.com/mongodb/mongo-tools/common/bson"
+	"github.com/mongodb/mongo-tools/common/bson/extjson"
+	"github.com/mongodb/mongo-tools/common/bsonutil"
+	"github.com/mongodb/mongo-tools/common/json"
 )
 
 // type for reflect code
-var marshalDType = reflect.TypeOf(bsonutil.MarshalD{})
+var marshalDType = reflect.TypeOf(extjson.MarshalD{})
 
 // CSVExportOutput is an implementation of ExportOutput that writes documents to the output in CSV format.
 type CSVExportOutput struct {
@@ -72,14 +74,24 @@ func (csvExporter *CSVExportOutput) Flush() error {
 
 // ExportDocument writes a line to output with the CSV representation of a document.
 func (csvExporter *CSVExportOutput) ExportDocument(document bson.D) error {
+	fmt.Println("\n document:", document)
 	rowOut := make([]string, 0, len(csvExporter.Fields))
-	extendedDoc, err := bsonutil.ConvertBSONValueToJSON(document)
+
+	extendedDoc, err := extjson.EncodeBSONDtoJSON(document)         // byte []byte
+	extendedDocBS, err := bsonutil.ConvertBSONValueToJSON(document) // type bsonutil.MarshalD
+
 	if err != nil {
 		return err
 	}
 
+	fmt.Println("\n extendedDoc:", string(extendedDoc))
+	fmt.Println("\n extendedDocBS:", extendedDocBS)
+
 	for _, fieldName := range csvExporter.Fields {
-		fieldVal := extractFieldByName(fieldName, extendedDoc)
+		fieldVal := extractFieldByName(fieldName, extjson.MarshalD(document))
+		//fieldVal := extractFieldByName(fieldName, string(extendedDoc))
+		fmt.Println("\n fieldVal, Name:", fieldVal, fieldName)
+
 		if fieldVal == nil {
 			rowOut = append(rowOut, "")
 		} else if reflect.TypeOf(fieldVal) == reflect.TypeOf(bson.M{}) ||
@@ -96,6 +108,8 @@ func (csvExporter *CSVExportOutput) ExportDocument(document bson.D) error {
 			rowOut = append(rowOut, fmt.Sprintf("%v", fieldVal))
 		}
 	}
+
+	fmt.Println("\n ROW OUT:", rowOut)
 	csvExporter.csvWriter.Write(rowOut)
 	csvExporter.NumExported++
 	return csvExporter.csvWriter.Error()
@@ -109,28 +123,49 @@ func extractFieldByName(fieldName string, document interface{}) interface{} {
 	var subdoc interface{} = document
 
 	for _, path := range dotParts {
+
+		fmt.Println("\nNew Loop")
+		fmt.Println("PATH IS  ", path)
+		fmt.Println("subdoc IS  ", subdoc)
+
 		docValue := reflect.ValueOf(subdoc)
 		if !docValue.IsValid() {
 			return ""
 		}
 		docType := docValue.Type()
 		docKind := docType.Kind()
+
+		fmt.Println("docValue", docValue)
+		fmt.Println("docKind", docKind)
+		fmt.Println("docType", docType)
 		if docKind == reflect.Map {
+			fmt.Println("MAP TYPE", path)
+
 			subdocVal := docValue.MapIndex(reflect.ValueOf(path))
 			if subdocVal.Kind() == reflect.Invalid {
 				return ""
 			}
+
 			subdoc = subdocVal.Interface()
+			fmt.Println("SUBDOC IS ", subdoc)
 		} else if docKind == reflect.Slice {
+			fmt.Println("SLICE TYPE", path)
 			if docType == marshalDType {
+				fmt.Println("marshalDType TYPE", path)
+
 				// dive into a D as a document
-				asD := bson.D(subdoc.(bsonutil.MarshalD))
+				asD := bson.D(subdoc.(extjson.MarshalD))
 				var err error
-				subdoc, err = bsonutil.FindValueByKey(path, &asD)
+
+				subdoc, err = FindValueByKey(path, &asD)
 				if err != nil {
 					return ""
 				}
+				fmt.Println("SUBDOC IS ", subdoc)
+				fmt.Println("FINDING PATH", path, subdoc, asD, err)
 			} else {
+				fmt.Println("OTHER TYPE", path)
+
 				//  check that the path can be converted to int
 				arrayIndex, err := strconv.Atoi(path)
 				if err != nil {
@@ -144,7 +179,9 @@ func extractFieldByName(fieldName string, document interface{}) interface{} {
 				if subdocVal.Kind() == reflect.Invalid {
 					return ""
 				}
+				fmt.Println(subdocVal.Type())
 				subdoc = subdocVal.Interface()
+				fmt.Println("SUBDOC IS ", subdoc)
 			}
 		} else {
 			// trying to index into a non-compound type - just return blank.
@@ -152,4 +189,17 @@ func extractFieldByName(fieldName string, document interface{}) interface{} {
 		}
 	}
 	return subdoc
+}
+
+var ErrNoSuchField = errors.New("no such field")
+
+// FindValueByKey returns the value of keyName in document. If keyName is not found
+// in the top-level of the document, ErrNoSuchField is returned as the error.
+func FindValueByKey(keyName string, document *bson.D) (interface{}, error) {
+	for _, key := range *document {
+		if key.Name == keyName {
+			return key.Value, nil
+		}
+	}
+	return nil, ErrNoSuchField
 }

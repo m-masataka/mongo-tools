@@ -14,6 +14,7 @@ import (
 	"github.com/mongodb/mongo-tools/common/util"
 	"gopkg.in/mgo.v2"
 	"github.com/mongodb/mongo-tools/common/bson"
+	"github.com/mongodb/mongo-tools/common/bson/extjson"
 	"time"
 )
 
@@ -176,8 +177,8 @@ func ConvertBSONValueToJSON(x interface{}) (interface{}, error) {
 			}
 			v[i].Value = jsonValue
 		}
-		return MarshalD(v), nil
-	case MarshalD:
+		return extjson.MarshalD(v), nil
+	case extjson.MarshalD:
 		return v, nil
 	case []interface{}: // array
 		for i, value := range v {
@@ -297,13 +298,13 @@ func GetBSONValueAsJSON(x interface{}) (interface{}, error) {
 				Value: jsonValue,
 			})
 		}
-		return MarshalD(out), nil
-	case MarshalD:
+		return extjson.MarshalD(out), nil
+	case extjson.MarshalD:
 		out, err := GetBSONValueAsJSON(bson.D(v))
 		if err != nil {
 			return nil, err
 		}
-		return MarshalD(out.(bson.D)), nil
+		return extjson.MarshalD(out.(bson.D)), nil
 	case []interface{}: // array
 		out := []interface{}{}
 		for _, value := range v {
