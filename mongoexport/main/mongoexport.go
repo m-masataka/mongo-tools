@@ -11,6 +11,8 @@ import (
 	"os"
 	"time"
 
+	"fmt"
+
 	"github.com/mongodb/mongo-tools/common/bson"
 	"github.com/mongodb/mongo-tools/common/db"
 	"github.com/mongodb/mongo-tools/common/log"
@@ -151,11 +153,13 @@ func main() {
 		defer writer.Close()
 	}
 
+	fmt.Println("main/mongoexport.go:155")
 	numDocs, err := exporter.Export(writer)
 	if err != nil {
 		log.Logvf(log.Always, "Failed: %v", err)
 		os.Exit(util.ExitError)
 	}
+	fmt.Println("main/mongoexport.go:161")
 
 	if numDocs == 1 {
 		log.Logvf(log.Always, "exported %v record", numDocs)

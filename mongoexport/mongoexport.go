@@ -351,23 +351,30 @@ func (exp *MongoExport) exportInternal(out io.Writer) (int64, error) {
 
 	// Write document content
 	for cursor.Next(&result) {
+		fmt.Println("mongoexport.go:354", result, cursor.Done())
+
 		err := exportOutput.ExportDocument(result)
 		if err != nil {
+			fmt.Println("mongoexport.go:358 ERRROR", err)
 			return docsCount, err
 		}
 		docsCount++
 		if docsCount%watchProgressorUpdateFrequency == 0 {
 			watchProgressor.Set(docsCount)
 		}
+		fmt.Println("IN CURSOR", cursor.Err())
 	}
 	watchProgressor.Set(docsCount)
 	if err := cursor.Err(); err != nil {
+		// TODO Heres the error
+		fmt.Println("mongoexport.go:368 ERRROR", err)
 		return docsCount, err
 	}
 
 	// Write footers
 	err = exportOutput.WriteFooter()
 	if err != nil {
+		fmt.Println("mongoexport.go:375 ERRROR", err)
 		return docsCount, err
 	}
 	exportOutput.Flush()
@@ -379,6 +386,7 @@ func (exp *MongoExport) exportInternal(out io.Writer) (int64, error) {
 // during the export operation.
 func (exp *MongoExport) Export(out io.Writer) (int64, error) {
 	count, err := exp.exportInternal(out)
+	fmt.Println("mongoexport.go:382", count, err)
 	return count, err
 }
 
@@ -416,20 +424,33 @@ func (exp *MongoExport) getExportOutput(out io.Writer) (ExportOutput, error) {
 	return NewJSONExportOutput(exp.OutputOpts.JSONArray, exp.OutputOpts.Pretty, out), nil
 }
 
+//TODO Steven: Need to validate this method and how they use bsonutil.convertjsondoc to bson
+
 // getObjectFromByteArg takes an object in extended JSON, and converts it to an object that
 // can be passed straight to db.collection.find(...) as a query or sort critera.
 // Returns an error if the string is not valid JSON, or extended JSON.
 func getObjectFromByteArg(queryRaw []byte) (map[string]interface{}, error) {
 	parsedJSON := map[string]interface{}{}
 	err := json.Unmarshal(queryRaw, &parsedJSON)
+	fmt.Println("QUERYRAW", string(queryRaw), parsedJSON)
+
+	//parsedJSONBytes, err := extjson.DecodeExtended(queryRaw)
+	//parsedJSONBytes, err := extjson.
+	//parsedJSON := string(parsedJSONBytes.([]byte))
+	//fmt.Println("V", string(parsedJSONBytes.([]byte)), err)
+
 	if err != nil {
-		return nil, fmt.Errorf("query '%v' is not valid JSON: %v", queryRaw, err)
+		return nil, fmt.Errorf("query '%v' is not valid extended JSON: %v", queryRaw, err)
 	}
 
+	fmt.Println("mongoexport.go:436")
 	err = bsonutil.ConvertJSONDocumentToBSON(parsedJSON)
 	if err != nil {
+		fmt.Println("mongoexport.go:445, ", err)
+
 		return nil, err
 	}
+	fmt.Println("PARSEDJSON 433: ", parsedJSON)
 	return parsedJSON, nil
 }
 
