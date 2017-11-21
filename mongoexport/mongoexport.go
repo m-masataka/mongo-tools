@@ -23,6 +23,7 @@ import (
 	"github.com/mongodb/mongo-tools/common/progress"
 	"github.com/mongodb/mongo-tools/common/util"
 	"gopkg.in/mgo.v2"
+	"github.com/mongodb/mongo-tools/common/bson/extjson"
 )
 
 // Output types supported by mongoexport.
@@ -435,12 +436,11 @@ func getObjectFromByteArg(queryRaw []byte) (map[string]interface{}, error) {
 	fmt.Println("QUERYRAW", string(queryRaw), parsedJSON)
 
 	//parsedJSONBytes, err := extjson.DecodeExtended(queryRaw)
-	//parsedJSONBytes, err := extjson.
 	//parsedJSON := string(parsedJSONBytes.([]byte))
-	//fmt.Println("V", string(parsedJSONBytes.([]byte)), err)
+	//fmt.Println("V", parsedJSON, err)
 
 	if err != nil {
-		return nil, fmt.Errorf("query '%v' is not valid extended JSON: %v", queryRaw, err)
+		return nil, fmt.Errorf("query '%v' is not valid extended JSON: %v", string(queryRaw), err)
 	}
 
 	fmt.Println("mongoexport.go:436")

@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/mongodb/mongo-tools/common/bson"
+	"github.com/mongodb/mongo-tools/common/bson/internal/json"
 )
 
 // DecodeExtended decodes any extended JSON values in the given value.
@@ -101,6 +102,11 @@ const (
 // type (e.g $numberLong) and replaces any such values with the corresponding
 // BSON type.
 func parseSpecialKeys(special interface{}) (interface{}, error) {
+	return ParseSpecialKeys(special)
+}
+
+// TODO: Steven The above method acts as a wrapper
+func ParseSpecialKeys(special interface{}) (interface{}, error) {
 	// first ensure we are using a correct document type
 	var doc map[string]interface{}
 	switch v := special.(type) {
@@ -133,6 +139,20 @@ func parseSpecialKeys(special interface{}) (interface{}, error) {
 				return decodeDate(v)
 			case bson.M:
 				return decodeDate(map[string]interface{}(v))
+			// Added additional cases for ill formatted dates
+			case json.Number:
+				n, err := v.Int64()
+				return time.Unix(n/1e3, n%1e3*1e6), err
+			case float64:
+				n := int64(v)
+				return time.Unix(n/1e3, n%1e3*1e6), nil
+			case int32:
+				n := int64(v)
+				return time.Unix(n/1e3, n%1e3*1e6), nil
+			case int64:
+				return time.Unix(v/1e3, v%1e3*1e6), nil
+			case string: // ISODate
+				return v, nil
 			default:
 				return nil, errors.New("invalid type for $date field")
 			}

@@ -8,10 +8,11 @@ package bsonutil
 
 import (
 	"fmt"
-	"github.com/mongodb/mongo-tools/common/json"
-	. "github.com/smartystreets/goconvey/convey"
 	"testing"
 	"time"
+
+	"github.com/mongodb/mongo-tools/common/json"
+	. "github.com/smartystreets/goconvey/convey"
 )
 
 func TestDateValue(t *testing.T) {
@@ -27,6 +28,7 @@ func TestDateValue(t *testing.T) {
 			err := ConvertJSONDocumentToBSON(jsonMap)
 			So(err, ShouldBeNil)
 
+			fmt.Println("JSONVALUE", jsonMap)
 			jsonValue, ok := jsonMap[key].(time.Time)
 			So(ok, ShouldBeTrue)
 			So(jsonValue.Equal(time.Unix(0, int64(100*time.Millisecond))), ShouldBeTrue)

@@ -7,10 +7,11 @@
 package bsonutil
 
 import (
+	"testing"
+
 	"github.com/mongodb/mongo-tools/common/bson"
 	"github.com/mongodb/mongo-tools/common/json"
 	. "github.com/smartystreets/goconvey/convey"
-	"testing"
 )
 
 func TestRegExpValue(t *testing.T) {
@@ -32,8 +33,8 @@ func TestRegExpValue(t *testing.T) {
 			key := "key"
 			jsonMap := map[string]interface{}{
 				key: map[string]interface{}{
-					"$regex":   "foo",
-					"$options": "i",
+					"$regularExpression": "foo",
+					"$options":           "i",
 				},
 			}
 
@@ -46,8 +47,8 @@ func TestRegExpValue(t *testing.T) {
 			key := "key"
 			jsonMap := map[string]interface{}{
 				key: map[string]interface{}{
-					"$regex":   "bar",
-					"$options": "gims",
+					"$regularExpression": "bar",
+					"$options":           "gims",
 				},
 			}
 
@@ -60,8 +61,8 @@ func TestRegExpValue(t *testing.T) {
 			key := "key"
 			jsonMap := map[string]interface{}{
 				key: map[string]interface{}{
-					"$regex":   "baz",
-					"$options": "y",
+					"$regularExpression": "baz",
+					"$options":           "y",
 				},
 			}
 

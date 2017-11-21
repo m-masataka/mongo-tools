@@ -7,42 +7,42 @@
 package bsonutil
 
 import (
-	"bytes"
 	"fmt"
-	"github.com/mongodb/mongo-tools/common/json"
-	"github.com/mongodb/mongo-tools/common/util"
+
 	"github.com/mongodb/mongo-tools/common/bson"
+	"github.com/mongodb/mongo-tools/common/util"
 )
 
-// MarshalD is a wrapper for bson.D that allows unmarshalling
-// of bson.D with preserved order. Necessary for printing
-// certain database commands.
-type MarshalD bson.D
-
-// MarshalJSON makes the MarshalD type usable by
-// the encoding/json package.
-func (md MarshalD) MarshalJSON() ([]byte, error) {
-	var buff bytes.Buffer
-	buff.WriteString("{")
-	for i, item := range md {
-		key, err := json.Marshal(item.Name)
-		if err != nil {
-			return nil, fmt.Errorf("cannot marshal key %v: %v", item.Name, err)
-		}
-		val, err := json.Marshal(item.Value)
-		if err != nil {
-			return nil, fmt.Errorf("cannot marshal value %v: %v", item.Value, err)
-		}
-		buff.Write(key)
-		buff.WriteString(":")
-		buff.Write(val)
-		if i != len(md)-1 {
-			buff.WriteString(",")
-		}
-	}
-	buff.WriteString("}")
-	return buff.Bytes(), nil
-}
+//
+//// MarshalD is a wrapper for bson.D that allows unmarshalling
+//// of bson.D with preserved order. Necessary for printing
+//// certain database commands.
+//type MarshalD bson.D
+//
+//// MarshalJSON makes the MarshalD type usable by
+//// the encoding/json package.
+//func (md MarshalD) MarshalJSON() ([]byte, error) {
+//	var buff bytes.Buffer
+//	buff.WriteString("{")
+//	for i, item := range md {
+//		key, err := json.Marshal(item.Name)
+//		if err != nil {
+//			return nil, fmt.Errorf("cannot marshal key %v: %v", item.Name, err)
+//		}
+//		val, err := json.Marshal(item.Value)
+//		if err != nil {
+//			return nil, fmt.Errorf("cannot marshal value %v: %v", item.Value, err)
+//		}
+//		buff.Write(key)
+//		buff.WriteString(":")
+//		buff.Write(val)
+//		if i != len(md)-1 {
+//			buff.WriteString(",")
+//		}
+//	}
+//	buff.WriteString("}")
+//	return buff.Bytes(), nil
+//}
 
 // MakeSortString takes a bson.D object and converts it to a slice of strings
 // that can be used as the input args to mgo's .Sort(...) function.

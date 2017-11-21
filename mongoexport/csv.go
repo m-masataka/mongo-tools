@@ -17,7 +17,7 @@ import (
 
 	"github.com/mongodb/mongo-tools/common/bson"
 	"github.com/mongodb/mongo-tools/common/bson/extjson"
-	"github.com/mongodb/mongo-tools/common/bsonutil"
+	//"github.com/mongodb/mongo-tools/common/bsonutil"
 	"github.com/mongodb/mongo-tools/common/json"
 )
 
@@ -77,15 +77,13 @@ func (csvExporter *CSVExportOutput) ExportDocument(document bson.D) error {
 	fmt.Println("\n document:", document)
 	rowOut := make([]string, 0, len(csvExporter.Fields))
 
-	extendedDoc, err := extjson.EncodeBSONDtoJSON(document)         // byte []byte
-	extendedDocBS, err := bsonutil.ConvertBSONValueToJSON(document) // type bsonutil.MarshalD
-
-	if err != nil {
-		return err
-	}
-
-	fmt.Println("\n extendedDoc:", string(extendedDoc))
-	fmt.Println("\n extendedDocBS:", extendedDocBS)
+	//extendedDoc, err := extjson.EncodeBSONDtoJSON(document)         // byte []byte
+	//extendedDocBS, err := bsonutil.ConvertBSONValueToJSON(document) // type bsonutil.MarshalD
+	//if err != nil {
+	//	return err
+	//}
+	//fmt.Println("\n extendedDoc:", string(extendedDoc))
+	//fmt.Println("\n extendedDocBS:", extendedDocBS)
 
 	for _, fieldName := range csvExporter.Fields {
 		fieldVal := extractFieldByName(fieldName, extjson.MarshalD(document))
@@ -150,13 +148,18 @@ func extractFieldByName(fieldName string, document interface{}) interface{} {
 			fmt.Println("SUBDOC IS ", subdoc)
 		} else if docKind == reflect.Slice {
 			fmt.Println("SLICE TYPE", path)
-			if docType == marshalDType {
-				fmt.Println("marshalDType TYPE", path)
+			if docType == marshalDType  || docType == reflect.TypeOf(bson.D{}) {
+				var asD = bson.D{}
+				if (docType == marshalDType) {
+					fmt.Println("marshalDType TYPE", path)
+					// dive into a D as a document
+					asD = bson.D(subdoc.(extjson.MarshalD))
+				} else {
+					fmt.Println("bsonDType TYPE", path)
+					asD = subdoc.(bson.D)
+				}
 
-				// dive into a D as a document
-				asD := bson.D(subdoc.(extjson.MarshalD))
 				var err error
-
 				subdoc, err = FindValueByKey(path, &asD)
 				if err != nil {
 					return ""

@@ -18,6 +18,7 @@ import (
 	"github.com/mongodb/mongo-tools/common/log"
 	"github.com/mongodb/mongo-tools/common/util"
 	"gopkg.in/mgo.v2"
+	"github.com/mongodb/mongo-tools/common/bson/extjson"
 )
 
 // Specially treated restore collection types.
@@ -391,7 +392,7 @@ func (restore *MongoRestore) RestoreUsersOrRoles(users, roles *intents.Intent) e
 		}
 	}
 
-	command := bsonutil.MarshalD{}
+	command := extjson.MarshalD{}
 	command = append(command,
 		bson.DocElem{Name: "_mergeAuthzCollections", Value: 1})
 	command = append(command,
