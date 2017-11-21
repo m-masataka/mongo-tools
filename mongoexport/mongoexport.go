@@ -23,7 +23,7 @@ import (
 	"github.com/mongodb/mongo-tools/common/progress"
 	"github.com/mongodb/mongo-tools/common/util"
 	"gopkg.in/mgo.v2"
-	"github.com/mongodb/mongo-tools/common/bson/extjson"
+	//"github.com/mongodb/mongo-tools/common/bson/extjson"
 )
 
 // Output types supported by mongoexport.
@@ -425,32 +425,19 @@ func (exp *MongoExport) getExportOutput(out io.Writer) (ExportOutput, error) {
 	return NewJSONExportOutput(exp.OutputOpts.JSONArray, exp.OutputOpts.Pretty, out), nil
 }
 
-//TODO Steven: Need to validate this method and how they use bsonutil.convertjsondoc to bson
-
 // getObjectFromByteArg takes an object in extended JSON, and converts it to an object that
 // can be passed straight to db.collection.find(...) as a query or sort critera.
 // Returns an error if the string is not valid JSON, or extended JSON.
 func getObjectFromByteArg(queryRaw []byte) (map[string]interface{}, error) {
 	parsedJSON := map[string]interface{}{}
 	err := json.Unmarshal(queryRaw, &parsedJSON)
-	fmt.Println("QUERYRAW", string(queryRaw), parsedJSON)
-
-	//parsedJSONBytes, err := extjson.DecodeExtended(queryRaw)
-	//parsedJSON := string(parsedJSONBytes.([]byte))
-	//fmt.Println("V", parsedJSON, err)
-
 	if err != nil {
 		return nil, fmt.Errorf("query '%v' is not valid extended JSON: %v", string(queryRaw), err)
 	}
-
-	fmt.Println("mongoexport.go:436")
 	err = bsonutil.ConvertJSONDocumentToBSON(parsedJSON)
 	if err != nil {
-		fmt.Println("mongoexport.go:445, ", err)
-
 		return nil, err
 	}
-	fmt.Println("PARSEDJSON 433: ", parsedJSON)
 	return parsedJSON, nil
 }
 
